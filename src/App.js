@@ -92,7 +92,7 @@ function MainRoute(){
         {/* <Route path="/detail/:id/:id2" element={<Detail shoes={shoes} />} /> */}
         {/* <Route path="/detail/:id/test/:id2" element={<Detail shoes={shoes} />} /> */}
         <Route path="/ExWeatherInfo" element={<div className="container"> <div className="row"> <ExWeatherInfo /> </div></div>} />
-        <Route path="/ExWeatherInfo/:id" element={<ExWeatherInfoDetail shoes={shoes} />} />
+        <Route path="/ExWeatherInfo/:id" element={<ExWeatherInfoDetail />} />
         <Route path="/cart" element={<Cart />} />
 
         {/* <Route path="/about" element={ <AboutPage /> } />
