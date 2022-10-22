@@ -92,7 +92,7 @@ function MainRoute(){
         {/* <Route path="/detail/:id/:id2" element={<Detail shoes={shoes} />} /> */}
         {/* <Route path="/detail/:id/test/:id2" element={<Detail shoes={shoes} />} /> */}
         <Route path="/ExWeatherInfo" element={<div className="container"> <div className="row"> <ExWeatherInfo /> </div></div>} />
-        <Route path="/ExWeatherInfo/:id" element={<ExWeatherInfoDetail />} />
+        <Route path="/ExWeatherInfo/:id" element={<ExWeatherInfoDetail shoes={shoes} />} />
         <Route path="/cart" element={<Cart />} />
 
         {/* <Route path="/about" element={ <AboutPage /> } />
@@ -155,6 +155,9 @@ function ExWeatherInfo() {
   const timerId = useRef();
   let [weather, setWeather] = useState(data);
   let [nowTimer, setNowTimer] = useState('');
+  let [nowDate, setNowDate] = useState('');
+  let [nowTime, setNowTime] = useState('');
+  let [weatherCount, setWeatherCount] = useState(-9);
 
   const GetNowDate = () => {
     var dt = new Date();
@@ -199,52 +202,71 @@ function ExWeatherInfo() {
 
   
   const startTimer = () => {
+    let count;
     timerId.current = setInterval(() => {
-      GetWeatherInfo();
+      //count=GetWeatherInfo(0);
+      GetWeatherInfo(0);
     }, 3600000) //3600초(1시간) 마다 체크
   }
 
-  const GetWeatherInfo = ()=>{
 
+  const GetWeatherInfo = (i)=>{
     const ExWeather_Date = GetNowDate();
-    const ExWeather_Time = GetNowTime();
+    const ExWeather_Time = GetNowTime()-10;
+    setNowDate(ExWeather_Date);
+    setNowTime(ExWeather_Time);
 
     let url = ExWeather_URL + "&type=json&sdate=" + ExWeather_Date + "&stdHour=" + ExWeather_Time
     console.log(url);
-    axios.get(url).then((결과) => { //비동기
-      if (결과.data.count = 0) {
-        console.log('데이터없음');
 
-      }
-      else if (결과.data.count > 0) {
-        let makeData = [];
-        for (let i = 0; i < 결과.data.count; i++) {
-          makeData.push(결과.data.list[i]);
-        }
-        setWeather(makeData);
-      }
-    })
-      .catch(() => {
-        //setLoading(false);//로딩중 메세지 제거
-        console.log('실패함');
-      })
+        axios.get(url).then((결과) => { //비동기
+
+          if (결과.data.count == 0) {
+            setWeatherCount(0);
+          }
+          else if (결과.data.count > 0) {
+            let makeData = [];
+            for (let i = 0; i < 결과.data.count; i++) {
+              makeData.push(결과.data.list[i]);
+            }
+            setWeather(makeData);
+            setWeatherCount(결과.data.count);
+          }
+        })
+        .catch(() => {
+          //setLoading(false);//로딩중 메세지 제거
+          console.log('실패함');
+          setWeatherCount(-1);
+        })
   }
+
   useEffect(() => {
-    GetWeatherInfo();
+    GetWeatherInfo(0);
     startTimer();
   }, []);
 
-
-  return (
-    weather.map(function(a,i){
+  if(weatherCount == 0) { 
+    return <div className="col-md-12" key={0}>날씨정보제공 서비스 준비중입니다.</div> 
+  }
+  else if (weatherCount > 0) { 
       return (
-          <div className="col-md-4" key={i}>
-            <ExWeatherInfoCard weather={weather[i]} />
-          </div>
-      )
-    })
-  );
+        weather.map(function (a, i) {
+          return (
+              <div className="col-md-3" key={i}>
+                <ExWeatherInfoCard weather={weather[i]} />
+              </div>
+          )
+        })
+      );
+  }
+  else if (weatherCount == -1) { 
+    return <div className="col-md-12" key={0}>데이터 수신 에러</div> 
+  }
+  else { 
+    return <div className="col-md-12" key={0}>데이터 수신중...</div> 
+  }
 }
+
 function Test(props){
   console.log('In Test')
   return (
