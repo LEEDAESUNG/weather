@@ -45,6 +45,9 @@ function App() {
   );
 }
 function MainRoute(){
+  
+  let [weather, setWeather] = useState(data);
+
   let navigate = useNavigate();
   return (
     <>
@@ -91,8 +94,8 @@ function MainRoute(){
         {/* <Route path="/detail" element={ <Detail shoes={shoes} /> } /> */}
         {/* <Route path="/detail/:id/:id2" element={<Detail shoes={shoes} />} /> */}
         {/* <Route path="/detail/:id/test/:id2" element={<Detail shoes={shoes} />} /> */}
-        <Route path="/ExWeatherInfo" element={<div className="container"> <div className="row"> <ExWeatherInfo /> </div></div>} />
-        <Route path="/ExWeatherInfo/:id" element={<ExWeatherInfoDetail />} />
+        <Route path="/ExWeatherInfo" element={<div className="container"> <div className="row"> <ExWeatherInfo weather={weather} setWeather={setWeather}/> </div></div>} />
+        <Route path="/ExWeatherInfo/:id" element={<ExWeatherInfoDetail weather={weather} setWeather={setWeather} />} />
         <Route path="/cart" element={<Cart />} />
 
         {/* <Route path="/about" element={ <AboutPage /> } />
@@ -138,7 +141,7 @@ function Home() {
     </>
   );
 }
-function ExWeatherInfo() {
+function ExWeatherInfo(props) {
   // return (
   //   props.weather.map(function(a,i){
   //     return (
@@ -153,7 +156,7 @@ function ExWeatherInfo() {
   let ExWeather_URL = "http://data.ex.co.kr/openapi/restinfo/restWeatherList?key=" + ExWeather_Key;
 
   const timerId = useRef();
-  let [weather, setWeather] = useState(data);
+  //let [weather, setWeather] = useState(data);
   let [nowTimer, setNowTimer] = useState('');
   let [nowDate, setNowDate] = useState('');
   let [nowTime, setNowTime] = useState('');
@@ -204,15 +207,14 @@ function ExWeatherInfo() {
   const startTimer = () => {
     let count;
     timerId.current = setInterval(() => {
-      //count=GetWeatherInfo(0);
-      GetWeatherInfo(0);
+      GetWeatherInfo();
     }, 3600000) //3600초(1시간) 마다 체크
   }
 
 
-  const GetWeatherInfo = (i)=>{
+  const GetWeatherInfo = ()=>{
     const ExWeather_Date = GetNowDate();
-    const ExWeather_Time = GetNowTime()-10;
+    const ExWeather_Time = GetNowTime();
     setNowDate(ExWeather_Date);
     setNowTime(ExWeather_Time);
 
@@ -229,7 +231,7 @@ function ExWeatherInfo() {
             for (let i = 0; i < 결과.data.count; i++) {
               makeData.push(결과.data.list[i]);
             }
-            setWeather(makeData);
+            props.setWeather(makeData);
             setWeatherCount(결과.data.count);
           }
         })
@@ -241,7 +243,7 @@ function ExWeatherInfo() {
   }
 
   useEffect(() => {
-    GetWeatherInfo(0);
+    GetWeatherInfo();
     startTimer();
   }, []);
 
@@ -250,10 +252,10 @@ function ExWeatherInfo() {
   }
   else if (weatherCount > 0) { 
       return (
-        weather.map(function (a, i) {
+        props.weather.map(function (a, i) {
           return (
               <div className="col-md-3" key={i}>
-                <ExWeatherInfoCard weather={weather[i]} />
+                <ExWeatherInfoCard weather={props.weather[i]} />
               </div>
           )
         })
