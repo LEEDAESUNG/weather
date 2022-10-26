@@ -29,6 +29,9 @@ import 기타3 from './img/weather_etc3.png';
 import 기타4 from './img/weather_etc4.png';
 import 기타5 from './img/weather_etc5.png';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams} from 'react-router-dom';
+
 const ExWeather_Key = "9492827553"; //고속도로휴게소 날씨API Key
 
 function App() {
@@ -95,7 +98,7 @@ function MainRoute(){
         {/* <Route path="/detail/:id/:id2" element={<Detail shoes={shoes} />} /> */}
         {/* <Route path="/detail/:id/test/:id2" element={<Detail shoes={shoes} />} /> */}
         <Route path="/ExWeatherInfo" element={<div className="container"> <div className="row"> <ExWeatherInfo weather={weather} setWeather={setWeather}/> </div></div>} />
-        <Route path="/ExWeatherInfo/:id" element={<ExWeatherInfoDetail weather={weather} setWeather={setWeather} />} />
+        <Route path="/ExWeatherInfo/:unitCode" element={<ExWeatherInfoDetail weather={weather} setWeather={setWeather} />} />
         <Route path="/cart" element={<Cart />} />
 
         {/* <Route path="/about" element={ <AboutPage /> } />
@@ -304,44 +307,104 @@ function ExWeatherInfoBody(props){
     })
   )
 }
+
+
+
+function GetExWeatherCloud(props) {
+  let cloudeUrl = '';
+  let cloude = props.weather.weatherContents;
+
+  if (cloude == "박무") {
+    cloudeUrl = 기타2
+  }
+  else if (cloude == "연무") {
+    cloudeUrl = 기타1
+  }
+  else if (cloude == "맑음") {
+    cloudeUrl = 흐림5
+  }
+  else if (cloude == "구름조금") {
+    cloudeUrl = 흐림1
+  }
+  else if (cloude == "구름많음") {
+    cloudeUrl = 흐림2
+  }
+  else {
+    cloudeUrl = "";
+  }
+  console.log('cloudeUrl:' + cloudeUrl);
+  
+  return (
+    <div>
+      <img src={cloudeUrl} width="30%" />
+    </div>
+  );
+}
+
 let url = '';
 function ExWeatherInfoCard(props){
-  if (props.weather.weatherContents == "박무")
-  {
-    url = 기타2
-  }
-  else if (props.weather.weatherContents == "연무") {
-    url = 기타1
-  }
-  else if (props.weather.weatherContents == "맑음") {
-    url = 흐림5
-  }
-  else if (props.weather.weatherContents == "구름조금") {
-    url = 흐림1
-  }
-  else if (props.weather.weatherContents == "구름많음") {
-    url = 흐림2
-  }
-  else
-  {
-    url = "";
-  }
+  // if (props.weather.weatherContents == "박무")
+  // {
+  //   url = 기타2
+  // }
+  // else if (props.weather.weatherContents == "연무") {
+  //   url = 기타1
+  // }
+  // else if (props.weather.weatherContents == "맑음") {
+  //   url = 흐림5
+  // }
+  // else if (props.weather.weatherContents == "구름조금") {
+  //   url = 흐림1
+  // }
+  // else if (props.weather.weatherContents == "구름많음") {
+  //   url = 흐림2
+  // }
+  // else
+  // {
+  //   url = "";
+  // }
 
   //console.log(props.weather.weatherContents + ':' + url)
   
   return(
     <>
       <Link to={"/ExWeatherInfo/" + (Number(props.weather.unitCode))}>
-        <img src={url} width="30%" />
+        {/* <img src={url} width="30%" /> */}
+        <GetExWeatherCloud weather={props.weather} />
         <h5>{props.weather.unitName}</h5>
         <p> {props.weather.weatherContents} </p>
       </Link>
     </>
   );
 }
-function ExWeatherInfoDetail() {
+function ExWeatherInfoDetail(props) {
+  //let weather = props.weather;
+  //let [weather2, setWeather] = useState([]);
+
+  //console.log(props.weather);
+  let { unitCode } = useParams();
+  let trimUnitCode = ('000' + (unitCode.replace(' ', ''))).slice(-3);
+  console.log('trimUnitCode:' + trimUnitCode)
+  let 찾은휴게소 = props.weather.find(x => (x.unitCode).replace(' ','') == trimUnitCode);
+
+  console.log('찾은휴게소:' + 찾은휴게소.unitCode);
+  //let state = useSelector((state) => { return state });
+  //let dispatch = useDispatch();
+  let navigate = useNavigate();
+
   return (
-    <div></div>
+    <div className="container">
+      <div className="row">
+        <div className="col-md-6">
+          {/* <ExWeatherInfoCard weather={찾은휴게소} /> */}
+          <GetExWeatherCloud weather={찾은휴게소} />
+          
+          <h5>{props.weather.unitName}</h5>
+          <p> {props.weather.weatherContents} </p>
+        </div>
+      </div>
+
+    </div>
   );
 }
 function Cart() {
