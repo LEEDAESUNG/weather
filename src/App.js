@@ -217,7 +217,7 @@ function ExWeatherInfo(props) {
 
   const GetWeatherInfo = ()=>{
     const ExWeather_Date = GetNowDate();
-    const ExWeather_Time = GetNowTime();
+    const ExWeather_Time = GetNowTime()-10;
     setNowDate(ExWeather_Date);
     setNowTime(ExWeather_Time);
 
@@ -323,6 +323,9 @@ function GetExWeatherCloud(props) {
   else if (cloude == "맑음") {
     cloudeUrl = 흐림5
   }
+  else if (cloude == "흐림") {
+    cloudeUrl = 흐림2
+  }
   else if (cloude == "구름조금") {
     cloudeUrl = 흐림1
   }
@@ -332,7 +335,7 @@ function GetExWeatherCloud(props) {
   else {
     cloudeUrl = "";
   }
-  console.log('cloudeUrl:' + cloudeUrl);
+  //console.log('cloudeUrl:' + cloudeUrl);
   
   return (
     <div>
@@ -343,29 +346,7 @@ function GetExWeatherCloud(props) {
 
 let url = '';
 function ExWeatherInfoCard(props){
-  // if (props.weather.weatherContents == "박무")
-  // {
-  //   url = 기타2
-  // }
-  // else if (props.weather.weatherContents == "연무") {
-  //   url = 기타1
-  // }
-  // else if (props.weather.weatherContents == "맑음") {
-  //   url = 흐림5
-  // }
-  // else if (props.weather.weatherContents == "구름조금") {
-  //   url = 흐림1
-  // }
-  // else if (props.weather.weatherContents == "구름많음") {
-  //   url = 흐림2
-  // }
-  // else
-  // {
-  //   url = "";
-  // }
 
-  //console.log(props.weather.weatherContents + ':' + url)
-  
   return(
     <>
       <Link to={"/ExWeatherInfo/" + (Number(props.weather.unitCode))}>
@@ -382,16 +363,17 @@ function ExWeatherInfoDetail(props) {
   //let [weather2, setWeather] = useState([]);
 
   //console.log(props.weather);
+
   let { unitCode } = useParams();
   let trimUnitCode = ('000' + (unitCode.replace(' ', ''))).slice(-3);
-  console.log('trimUnitCode:' + trimUnitCode)
   let 찾은휴게소 = props.weather.find(x => (x.unitCode).replace(' ','') == trimUnitCode);
-
-  console.log('찾은휴게소:' + 찾은휴게소.unitCode);
-  //let state = useSelector((state) => { return state });
+  let nowTempValue = Math.round(찾은휴게소.tempValue) //기온 반올림
+  
+  console.log('찾은휴게소:' + 찾은휴게소.unitCode);  
+  //let state = useSelector((state) => { return state }); 
   //let dispatch = useDispatch();
   let navigate = useNavigate();
-
+ 
   return (
     <div className="container">
       <div className="row">
@@ -399,8 +381,11 @@ function ExWeatherInfoDetail(props) {
           {/* <ExWeatherInfoCard weather={찾은휴게소} /> */}
           <GetExWeatherCloud weather={찾은휴게소} />
           
-          <h5>{props.weather.unitName}</h5>
-          <p> {props.weather.weatherContents} </p>
+          <h5>{찾은휴게소.unitName}</h5>
+          <p> {찾은휴게소.weatherContents} </p>
+          <p> 현재기온 {nowTempValue} </p>
+          <p> {찾은휴게소.addr} </p>
+          
         </div>
       </div>
 
