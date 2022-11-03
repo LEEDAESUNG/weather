@@ -4,39 +4,20 @@ import { useEffect, useState, useInterval, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import axios from 'axios'
+
 import './App.css';
 import data from './data/data.js'
-import 메인이미지 from './img/main-bg.jpg';
-import 흐림1 from './img/weather_cloud1.png';
-import 흐림2 from './img/weather_cloud2.png';
-import 흐림3 from './img/weather_cloud3.png';
-import 흐림4 from './img/weather_cloud4.png';
-import 흐림5 from './img/weather_cloud5.png';
-import 서리1 from './img/weather_frost1.png';
-import 서리2 from './img/weather_frost2.png';
-import 서리3 from './img/weather_frost3.png';
-import 서리4 from './img/weather_frost4.png';
-import 서리5 from './img/weather_frost5.png';
-import 비1 from './img/weather_rain1.png';
-import 비2 from './img/weather_rain2.png';
-import 비3 from './img/weather_rain3.png';
-import 비4 from './img/weather_rain4.png';
-import 비5 from './img/weather_rain5.png';
-import 기타1 from './img/weather_etc1.png';
-import 기타2 from './img/weather_etc2.png';
-import 기타3 from './img/weather_etc3.png';
-import 기타4 from './img/weather_etc4.png';
-import 기타5 from './img/weather_etc5.png';
+import ExWeatherInfo from './routes/ExWeatherInfo.js'
+import ExWeatherInfoDetail from './routes/ExWeatherInfoDetail.js'
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams} from 'react-router-dom';
 
-const ExWeather_Key = "9492827553"; //고속도로휴게소 날씨API Key
+// const ExWeather_Key = "9492827553"; //공공데이터 고속도로휴게소 날씨API Key
 
 function App() {
-  
-  
+
+
   return (
     <div className="App">
 
@@ -48,7 +29,7 @@ function App() {
   );
 }
 function MainRoute(){
-  
+
   let [weather, setWeather] = useState(data);
 
   let navigate = useNavigate();
@@ -90,7 +71,7 @@ function MainRoute(){
           </Container>
         </Navbar>
       </div>
-      
+
 
       <Routes>
         <Route path="/" element={<div className="container"> <div className="row"> <Home /> </div></div>} />
@@ -99,15 +80,15 @@ function MainRoute(){
         {/* <Route path="/detail/:id/test/:id2" element={<Detail shoes={shoes} />} /> */}
         <Route path="/ExWeatherInfo" element={<div className="container"> <div className="row"> <ExWeatherInfo weather={weather} setWeather={setWeather}/> </div></div>} />
         <Route path="/ExWeatherInfo/:unitCode" element={<ExWeatherInfoDetail weather={weather} setWeather={setWeather} />} />
-        <Route path="/cart" element={<Cart />} />
+        {/* <Route path="/cart" element={<Cart />} /> */}
 
         {/* <Route path="/about" element={ <AboutPage /> } />
               <Route path="/about/member" element={<AboutPage />} />
               <Route path="/about/location" element={<AboutPage />} /> */}
 
         <Route path="/Covid19V1Center" element={<Covid19V1Center />} > {/* Nested Routes라고 함 */}
-          <Route path="member" element={<div> 멤버임</div>} /> {/* /about/member와 동일, AboutPage출력및 AboutPage내의 outlet부분에 출력 */}
-          <Route path="location" element={<div> 로케이션임</div>} /> {/* /about/location 동일, AboutPage출력및 AboutPage내의 outlet부분에 출력 */}
+          <Route path="member" element={<div> 멤버임</div>} /> {/* /Covid19V1Center/member와 동일, AboutPage출력및 AboutPage내의 outlet부분에 출력 */}
+          <Route path="location" element={<div> 로케이션임</div>} /> {/* /Covid19V1Center/location 동일, AboutPage출력및 AboutPage내의 outlet부분에 출력 */}
         </Route>
 
         <Route path="/event" element={<EventPage />} > {/* Nested Routes라고 함 */}
@@ -144,254 +125,256 @@ function Home() {
     </>
   );
 }
-function ExWeatherInfo(props) {
-  // return (
-  //   props.weather.map(function(a,i){
-  //     return (
-  //         <div className="col-md-4" key={i}>
-  //           <ExWeatherInfoCard weather={props.weather[i]} />
-  //         </div>
-  //     )
-  //   })
-  // );
+// function ExWeatherInfo(props) {
+//   // return (
+//   //   props.weather.map(function(a,i){
+//   //     return (
+//   //         <div className="col-md-4" key={i}>
+//   //           <ExWeatherInfoCard weather={props.weather[i]} />
+//   //         </div>
+//   //     )
+//   //   })
+//   // );
 
-  //let ExWeather_URL = "http://data.ex.co.kr/openapi/restinfo/restWeatherList?key=" + ExWeather_Key + "&type=json&sdate=20221001&stdHour=10"
-  let ExWeather_URL = "http://data.ex.co.kr/openapi/restinfo/restWeatherList?key=" + ExWeather_Key;
+//   //let ExWeather_URL = "http://data.ex.co.kr/openapi/restinfo/restWeatherList?key=" + ExWeather_Key + "&type=json&sdate=20221001&stdHour=10"
+//   let ExWeather_URL = "http://data.ex.co.kr/openapi/restinfo/restWeatherList?key=" + ExWeather_Key;
 
-  const timerId = useRef();
-  //let [weather, setWeather] = useState(data);
-  let [nowTimer, setNowTimer] = useState('');
-  let [nowDate, setNowDate] = useState('');
-  let [nowTime, setNowTime] = useState('');
-  let [weatherCount, setWeatherCount] = useState(-9);
-
-  const GetNowDate = () => {
-    var dt = new Date();
-    var year = dt.getFullYear();
-    var month = dt.getMonth() + 1;
-    var date = dt.getDate();
-    var day = dt.getDay();
-    var hour = dt.getHours();
-    var min = dt.getMinutes();
-    var sec = dt.getSeconds();
-    if (hour < 10) {
-      hour = '0' + hour;
-    } else {
-      hour = hour;
-    }
-
-    var ViewNowTime = year + '-' + month + '-' + date + ' ' + hour + ':' + min + ':' + sec
-    var GetInfoTime = year + '-' + month + '-' + date + ' ' + hour + ':00'
-    setNowTimer(GetInfoTime)
-    return (String(year) + String(month) + String(date))
-  }
-  const GetNowTime = () => {
-    var dt = new Date();
-    var year = dt.getFullYear();
-    var month = dt.getMonth() + 1;
-    var date = dt.getDate();
-    var day = dt.getDay();
-    var hour = dt.getHours();
-    var min = dt.getMinutes();
-    var sec = dt.getSeconds();
-    if (hour < 10) {
-      hour = '0' + hour;
-    } else {
-      hour = hour;
-    }
-
-    var ViewNowTime = year + '-' + month + '-' + date + ' ' + hour + ':' + min + ':' + sec
-    var GetInfoTime = year + '-' + month + '-' + date + ' ' + hour + ':00'
-    setNowTimer(GetInfoTime)
-    return (hour)
-  }
-
-  
-  const startTimer = () => {
-    let count;
-    timerId.current = setInterval(() => {
-      GetWeatherInfo();
-    }, 3600000) //3600초(1시간) 마다 체크
-  }
+//   const timerId = useRef();
+//   //let [weather, setWeather] = useState(data);
+//   let [nowTimer, setNowTimer] = useState('');
+//   let [nowDate, setNowDate] = useState('');
+//   let [nowTime, setNowTime] = useState('');
+//   let [weatherCount, setWeatherCount] = useState(-9);
 
 
-  const GetWeatherInfo = ()=>{
-    const ExWeather_Date = GetNowDate();
-    const ExWeather_Time = GetNowTime()-10;
-    setNowDate(ExWeather_Date);
-    setNowTime(ExWeather_Time);
+//   const GetNowDate = () => {
+//     var dt = new Date();
+//     var year = dt.getFullYear();
+//     var month = dt.getMonth() + 1;
+//     var date = dt.getDate();
+//     var day = dt.getDay();
+//     var hour = dt.getHours();
+//     var min = dt.getMinutes();
+//     var sec = dt.getSeconds();
+//     if (hour < 10) {
+//       hour = '0' + hour;
+//     } else {
+//       hour = hour;
+//     }
 
-    let url = ExWeather_URL + "&type=json&sdate=" + ExWeather_Date + "&stdHour=" + ExWeather_Time
-    console.log(url);
+//     var ViewNowTime = year + '-' + month + '-' + date + ' ' + hour + ':' + min + ':' + sec
+//     var GetInfoTime = year + '-' + month + '-' + date + ' ' + hour + ':00'
+//     setNowTimer(GetInfoTime)
+//     return (String(year) + String(month) + String(date))
+//   }
+//   const GetNowTime = () => {
+//     var dt = new Date();
+//     var year = dt.getFullYear();
+//     var month = dt.getMonth() + 1;
+//     var date = dt.getDate();
+//     var day = dt.getDay();
+//     var hour = dt.getHours();
+//     var min = dt.getMinutes();
+//     var sec = dt.getSeconds();
+//     if (hour < 10) {
+//       hour = '0' + hour;
+//     } else {
+//       hour = hour;
+//     }
 
-        axios.get(url).then((결과) => { //비동기
-
-          if (결과.data.count == 0) {
-            setWeatherCount(0);
-          }
-          else if (결과.data.count > 0) {
-            let makeData = [];
-            for (let i = 0; i < 결과.data.count; i++) {
-              makeData.push(결과.data.list[i]);
-            }
-            props.setWeather(makeData);
-            setWeatherCount(결과.data.count);
-          }
-        })
-        .catch(() => {
-          //setLoading(false);//로딩중 메세지 제거
-          console.log('실패함');
-          setWeatherCount(-1);
-        })
-  }
-
-  useEffect(() => {
-    GetWeatherInfo();
-    startTimer();
-  }, []);
-
-  if(weatherCount == 0) { 
-    return <div className="col-md-12" key={0}>날씨정보제공 서비스 준비중입니다.</div> 
-  }
-  else if (weatherCount > 0) { 
-      return (
-        props.weather.map(function (a, i) {
-          return (
-              <div className="col-md-3" key={i}>
-                <ExWeatherInfoCard weather={props.weather[i]} />
-              </div>
-          )
-        })
-      );
-  }
-  else if (weatherCount == -1) { 
-    return <div className="col-md-12" key={0}>데이터 수신 에러</div> 
-  }
-  else { 
-    return <div className="col-md-12" key={0}>데이터 수신중...</div> 
-  }
-}
-
-function Test(props){
-  console.log('In Test')
-  return (
-    props.weather.map(function(a,i){
-      return (
-          <div className="col-md-4" key={i}>
-            {/* <ExWeatherInfoCard weather={props.weather[i]} /> */}
-          <Test2 weather={props.weather[i]} />
-          </div>
-      )
-    })
-  );
-}
-function Test2(props){
-  return (
-    <>
-      <Link to={"/ExWeatherInfo/" + (Number(props.weather.weatherContents))}>
-        <img src={url} width="30%" />
-        <h5>{props.weather.unitName}</h5>
-        <p> {props.weather.weatherContents} </p>
-      </Link>
-    </>
-  );
-}
-function ExWeatherInfoBody(props){
-  return (
-    props.weather.map(function(a,i){
-      return (
-          <div className="col-md-4" key={i}>
-            <ExWeatherInfoCard weather={props.weather[i]} />
-          </div>
-      )
-    })
-  )
-}
+//     var ViewNowTime = year + '-' + month + '-' + date + ' ' + hour + ':' + min + ':' + sec
+//     var GetInfoTime = year + '-' + month + '-' + date + ' ' + hour + ':00'
+//     setNowTimer(GetInfoTime)
+//     return (hour)
+//   }
 
 
+//   const startTimer = () => {
+//     let count;
+//     timerId.current = setInterval(() => {
+//       GetWeatherInfo();
+//     }, 3600000) //3600초(1시간) 마다 체크
+//   }
 
-function GetExWeatherCloud(props) {
-  let cloudeUrl = '';
-  let cloude = props.weather.weatherContents;
 
-  if (cloude == "박무") {
-    cloudeUrl = 기타2
-  }
-  else if (cloude == "연무") {
-    cloudeUrl = 기타1
-  }
-  else if (cloude == "맑음") {
-    cloudeUrl = 흐림5
-  }
-  else if (cloude == "흐림") {
-    cloudeUrl = 흐림2
-  }
-  else if (cloude == "구름조금") {
-    cloudeUrl = 흐림1
-  }
-  else if (cloude == "구름많음") {
-    cloudeUrl = 흐림2
-  }
-  else {
-    cloudeUrl = "";
-  }
-  //console.log('cloudeUrl:' + cloudeUrl);
-  
-  return (
-    <div>
-      <img src={cloudeUrl} width="30%" />
-    </div>
-  );
-}
+//   const GetWeatherInfo = ()=>{
+//     const ExWeather_Date = GetNowDate();
+//     const ExWeather_Time = GetNowTime();
+//     setNowDate(ExWeather_Date);
+//     setNowTime(ExWeather_Time);
 
-let url = '';
-function ExWeatherInfoCard(props){
+//     let url = ExWeather_URL + "&type=json&sdate=" + ExWeather_Date + "&stdHour=" + ExWeather_Time
+//     console.log(url);
 
-  return(
-    <>
-      <Link to={"/ExWeatherInfo/" + (Number(props.weather.unitCode))}>
-        {/* <img src={url} width="30%" /> */}
-        <GetExWeatherCloud weather={props.weather} />
-        <h5>{props.weather.unitName}</h5>
-        <p> {props.weather.weatherContents} </p>
-      </Link>
-    </>
-  );
-}
-function ExWeatherInfoDetail(props) {
-  //let weather = props.weather;
-  //let [weather2, setWeather] = useState([]);
+//         axios.get(url).then((결과) => { //비동기
 
-  //console.log(props.weather);
+//           if (결과.data.count == 0) {
+//             setWeatherCount(0);
+//           }
+//           else if (결과.data.count > 0) {
+//             let makeData = [];
+//             for (let i = 0; i < 결과.data.count; i++) {
+//               makeData.push(결과.data.list[i]);
+//             }
+//             props.setWeather(makeData);
+//             setWeatherCount(결과.data.count);
+//           }
+//         })
+//         .catch(() => {
+//           //setLoading(false);//로딩중 메세지 제거
+//           console.log('실패함');
+//           setWeatherCount(-1);
+//         })
+//   }
 
-  let { unitCode } = useParams();
-  let trimUnitCode = ('000' + (unitCode.replace(' ', ''))).slice(-3);
-  let 찾은휴게소 = props.weather.find(x => (x.unitCode).replace(' ','') == trimUnitCode);
-  let nowTempValue = Math.round(찾은휴게소.tempValue) //기온 반올림
-  
-  console.log('찾은휴게소:' + 찾은휴게소.unitCode);  
-  //let state = useSelector((state) => { return state }); 
-  //let dispatch = useDispatch();
-  let navigate = useNavigate();
- 
-  return (
-    <div className="container">
-      <div className="row">
-        <div className="col-md-6">
-          {/* <ExWeatherInfoCard weather={찾은휴게소} /> */}
-          <GetExWeatherCloud weather={찾은휴게소} />
-          
-          <h5>{찾은휴게소.unitName}</h5>
-          <p> {찾은휴게소.weatherContents} </p>
-          <p> 현재기온 {nowTempValue} </p>
-          <p> {찾은휴게소.addr} </p>
-          
-        </div>
-      </div>
+//   useEffect(() => {
+//     GetWeatherInfo();
+//     startTimer();
+//   }, []);
 
-    </div>
-  );
-}
+//   if(weatherCount == 0) {
+//     return <div className="col-md-12" key={0}>날씨정보제공 서비스 준비중입니다.</div>
+//   }
+//   else if (weatherCount > 0) {
+//       return (
+//         props.weather.map(function (a, i) {
+//           return (
+//               <div className="col-md-3" key={i}>
+//                 <ExWeatherInfoCard weather={props.weather[i]} />
+//               </div>
+//           )
+//         })
+//       );
+//   }
+//   else if (weatherCount == -1) {
+//     return <div className="col-md-12" key={0}>데이터 수신 에러</div>
+//   }
+//   else {
+//     return <div className="col-md-12" key={0}>데이터 수신중...</div>
+//   }
+// }
+
+// function Test(props){
+//   console.log('In Test')
+//   return (
+//     props.weather.map(function(a,i){
+//       return (
+//           <div className="col-md-4" key={i}>
+//             {/* <ExWeatherInfoCard weather={props.weather[i]} /> */}
+//           <Test2 weather={props.weather[i]} />
+//           </div>
+//       )
+//     })
+//   );
+// }
+// function Test2(props){
+//   return (
+//     <>
+//       <Link to={"/ExWeatherInfo/" + (Number(props.weather.weatherContents))}>
+//         <img src={url} width="30%" />
+//         <h5>{props.weather.unitName}</h5>
+//         <p> {props.weather.weatherContents} </p>
+//       </Link>
+//     </>
+//   );
+// }
+// function ExWeatherInfoBody(props){
+//   return (
+//     props.weather.map(function(a,i){
+//       return (
+//           <div className="col-md-4" key={i}>
+//             <ExWeatherInfoCard weather={props.weather[i]} />
+//           </div>
+//       )
+//     })
+//   )
+// }
+
+
+
+// function ExWeatherCloud(props) {
+//   let cloudeUrl = '';
+//   let cloude = props.weather.weatherContents;
+
+//   if (cloude == "박무") {
+//     cloudeUrl = 기타2
+//   }
+//   else if (cloude == "연무") {
+//     cloudeUrl = 기타1
+//   }
+//   else if (cloude == "맑음") {
+//     cloudeUrl = 흐림5
+//   }
+//   else if (cloude == "흐림") {
+//     cloudeUrl = 흐림2
+//   }
+//   else if (cloude == "구름조금") {
+//     cloudeUrl = 흐림1
+//   }
+//   else if (cloude == "구름많음") {
+//     cloudeUrl = 흐림2
+//   }
+//   else {
+//     cloudeUrl = "";
+//   }
+//   //console.log('cloudeUrl:' + cloudeUrl);
+
+//   return (
+//     <div>
+//       <img src={cloudeUrl} width="20%" />
+//     </div>
+//   );
+// }
+
+// let url = '';
+// function ExWeatherInfoCard(props){
+
+//   return(
+//     <>
+//       <Link to={"/ExWeatherInfo/" + (Number(props.weather.unitCode))}>
+//         {/* <img src={url} width="30%" /> */}
+//         <ExWeatherCloud weather={props.weather} />
+//         <h5>{props.weather.unitName}</h5>
+//         <p> {props.weather.weatherContents} </p>
+//       </Link>
+//     </>
+//   );
+// }
+// function ExWeatherInfoDetail(props) {
+
+//   //let weather = props.weather;
+//   //let [weather2, setWeather] = useState([]);
+
+//   //console.log(props.weather);
+
+//   let { unitCode } = useParams();
+//   let trimUnitCode = ('000' + (unitCode.replace(' ', ''))).slice(-3);
+//   let 찾은휴게소 = props.weather.find(x => (x.unitCode).replace(' ','') == trimUnitCode);
+//   let nowTempValue = Math.round(찾은휴게소.tempValue) //기온 반올림
+
+//   console.log('찾은휴게소:' + 찾은휴게소.unitCode);
+//   //let state = useSelector((state) => { return state });
+//   //let dispatch = useDispatch();
+//   let navigate = useNavigate();
+
+//   return (
+//     <div className="container">
+//       <div className="row">
+//         <div className="col-md-12">
+//           {/* <ExWeatherInfoCard weather={찾은휴게소} /> */}
+//           <ExWeatherCloud weather={찾은휴게소} />
+
+//           <h5>{찾은휴게소.unitName}</h5>
+//           <p> {찾은휴게소.weatherContents} </p>
+//           <p> 현재기온 {nowTempValue} </p>
+//           <p> {찾은휴게소.addr} </p>
+
+//         </div>
+//       </div>
+
+//     </div>
+//   );
+// }
 function Cart() {
   return (
     <div></div>
