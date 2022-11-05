@@ -9,6 +9,7 @@ import './App.css';
 import data from './data/data.js'
 import ExWeatherInfo from './routes/ExWeatherInfo.js'
 import ExWeatherInfoDetail from './routes/ExWeatherInfoDetail.js'
+import Covid19V1Center from './routes/Covid19V1Center.js'
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams} from 'react-router-dom';
@@ -380,11 +381,7 @@ function Cart() {
     <div></div>
   );
 }
-function Covid19V1Center(){
-  return(
-    <div></div>
-  );
-}
+
 function EventPage() {
   return (
     <div></div>

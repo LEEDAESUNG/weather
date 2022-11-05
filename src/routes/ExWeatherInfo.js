@@ -87,14 +87,14 @@ function ExWeatherInfo(props) {
         // setNowTime(ExWeather_Time);
 
         let url = ExWeather_URL + "&type=json&sdate=" + ExWeather_Date + "&stdHour=" + ExWeather_Time
-        console.log(url);
+        console.log(url); 
 
         await axios.get(url).then((결과) => { //비동기
 
             if (결과.data.count == 0) {
                 setWeatherCount(0);
                 console.log(ExWeather_Time + ':00 --> 데이터 없음');
-                setLastTime(idx+1); //데이터가 없을 경우 1시간씩 뒤로 거슬러 가면서 데이터를 찾아서 가져온다
+                //setLastTime(idx+1); //데이터가 없을 경우 1시간씩 뒤로 거슬러 가면서 데이터를 찾아서 가져온다
             }
             else if (결과.data.count > 0) {
                 let makeData = [];
