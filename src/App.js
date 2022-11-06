@@ -87,7 +87,7 @@ function MainRoute(){
               <Route path="/about/member" element={<AboutPage />} />
               <Route path="/about/location" element={<AboutPage />} /> */}
 
-        <Route path="/Covid19V1Center" element={<Covid19V1Center />} > {/* Nested Routes라고 함 */}
+        <Route path="/Covid19V1Center" element={<div className="container"> <div className="row">  <Covid19V1Center /> </div></div>} > {/* Nested Routes라고 함 */}
           <Route path="member" element={<div> 멤버임</div>} /> {/* /Covid19V1Center/member와 동일, AboutPage출력및 AboutPage내의 outlet부분에 출력 */}
           <Route path="location" element={<div> 로케이션임</div>} /> {/* /Covid19V1Center/location 동일, AboutPage출력및 AboutPage내의 outlet부분에 출력 */}
         </Route>
@@ -109,14 +109,6 @@ function MainRoute(){
         <img src="https://codingapple1.github.io/shop/shoes5.jpg" width="100%" />
       </div> */}
 
-
-
-      {/* <button onClick={() => {
-        let copy = [...props.weather];
-        const comparator = (a, b) => a.title.localeCompare(b.title);
-        copy = copy.sort(comparator)
-        props.setWeather(copy);
-      }} > 상품명 정렬</button> */}
     </>
   );
 }
