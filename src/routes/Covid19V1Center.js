@@ -99,19 +99,41 @@ function Covid19V1Center() {
                 for (let i = 0; i < 결과.data.currentCount; i++) {
                     결과.data.data[i].centerName=결과.data.data[i].centerName.replace('코로나19 ','')
                     결과.data.data[i].address = 결과.data.data[i].address.replace(' 서울특별시', '서울특별시')
+                    결과.data.data[i].address = 결과.data.data[i].address.replace('강원 ', '강원도 ')
+                    결과.data.data[i].address = 결과.data.data[i].address.replace('대구시', '대구광역시')
+                    결과.data.data[i].address = 결과.data.data[i].address.replace('부산 ', '부산광역시 ')
+                    결과.data.data[i].address = 결과.data.data[i].address.replace('울산시 ', '울산광역시 ')
+                    결과.data.data[i].address = 결과.data.data[i].address.replace('경기 ', '경기도 ')
+                    결과.data.data[i].address = 결과.data.data[i].address.replace('경남 ', '경상남도 ')
+                    결과.data.data[i].address = 결과.data.data[i].address.replace('경북 ', '경상북도 ')
+                    결과.data.data[i].address = 결과.data.data[i].address.replace('전남 ', '전라남도 ')
+                    결과.data.data[i].address = 결과.data.data[i].address.replace('제주시 ', '제주특별자치도 ')
+                    결과.data.data[i].address = 결과.data.data[i].address.replace('충남 ', '충정남도 ')
+                    결과.data.data[i].address = 결과.data.data[i].address.replace('전주시 ', '전라북도 ')
+                    
                     makeData.push(결과.data.data[i]);
-
-                    if (comboData != 결과.data.data[i]){
-                        setComboData(결과.data.data[i]);
-                    }
                 }
                 
-                const comparator = (a, b) => a.address.localeCompare(b.address);
+                const comparator = (a, b) => a.address.localeCompare(b.address); // 주소별 소트
                 makeData = makeData.sort(comparator)
+                setCovid19Data(makeData); // 원본 데이터 저장
+                //console.log(makeData);
 
-                console.log(makeData);
-                //console.log(결과.data.data[0])
-                setCovid19Data(makeData);
+
+                //주소에서 지역명만 가져오기(ex:서울특별시,부산광역시..)
+                let arrLoc = [];
+                makeData.map(function (a, i) {
+                    let loc = a.address.indexOf(' ');
+                    let str = a.address.slice(0,loc);
+                    arrLoc.push(str);
+                });
+                //지역명 중복 제거
+                const arrLocUnique = arrLoc.filter((val, idx) => {
+                    return arrLoc.indexOf(val) === idx; //값이 처음나오는 배열 인덱스와 현재 인덱스가 같으면 포함
+                });
+                console.log('arrLocUnique' + arrLocUnique);
+                setComboData(arrLocUnique);
+                
             }
         })
             .catch(() => {
@@ -249,7 +271,7 @@ function Covid19V1Center() {
                 <Dropdown.Item href="#/action-2">경기</Dropdown.Item>
                 <Dropdown.Item href="#/action-3">인천</Dropdown.Item> */}
 
-                {Object.keys(comboData).map(e => <option key={e} value={e}>{e}</option>)}
+                {comboData.map((comboData) => <option value={comboData}>{comboData}</option>)}
 
             </DropdownButton>
         );
