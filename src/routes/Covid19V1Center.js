@@ -75,7 +75,7 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 function Covid19V1Center() {
     let [dataCount, setDataCount] = useState(0);
     let [covid19Data, setCovid19Data] = useState('');
-    let [comboData, setComboData] = useState('');
+    let [locationData, setLocationData] = useState('');
     const [page, setPage] = useState(1);
 
     const handlePageChange = (page) => {
@@ -98,6 +98,7 @@ function Covid19V1Center() {
                 let makeData = [];
                 for (let i = 0; i < 결과.data.currentCount; i++) {
                     결과.data.data[i].centerName=결과.data.data[i].centerName.replace('코로나19 ','')
+                    결과.data.data[i].centerName = 결과.data.data[i].centerName.replace('충청북도 고성군', '강원도 고성군')
                     결과.data.data[i].address = 결과.data.data[i].address.replace(' 서울특별시', '서울특별시')
                     결과.data.data[i].address = 결과.data.data[i].address.replace('강원 ', '강원도 ')
                     결과.data.data[i].address = 결과.data.data[i].address.replace('대구시', '대구광역시')
@@ -110,8 +111,9 @@ function Covid19V1Center() {
                     결과.data.data[i].address = 결과.data.data[i].address.replace('제주시 ', '제주특별자치도 ')
                     결과.data.data[i].address = 결과.data.data[i].address.replace('충남 ', '충정남도 ')
                     결과.data.data[i].address = 결과.data.data[i].address.replace('전주시 ', '전라북도 ')
+                    결과.data.data[i].address = 결과.data.data[i].address.replace('충정남도 ', '충청남도 ')
                     
-                    makeData.push(결과.data.data[i]);
+                    makeData.push(결과.data.data[i]); //기본 데이터 저장
                 }
                 
                 const comparator = (a, b) => a.address.localeCompare(b.address); // 주소별 소트
@@ -132,7 +134,7 @@ function Covid19V1Center() {
                     return arrLoc.indexOf(val) === idx; //값이 처음나오는 배열 인덱스와 현재 인덱스가 같으면 포함
                 });
                 console.log('arrLocUnique' + arrLocUnique);
-                setComboData(arrLocUnique);
+                setLocationData(arrLocUnique);
                 
             }
         })
@@ -271,11 +273,25 @@ function Covid19V1Center() {
                 <Dropdown.Item href="#/action-2">경기</Dropdown.Item>
                 <Dropdown.Item href="#/action-3">인천</Dropdown.Item> */}
 
-                {comboData.map((comboData) => <option value={comboData}>{comboData}</option>)}
+                {/* {locationData.map((locationData) => <Dropdown.Item value={locationData} onClick={() => { console.log(locationData) }}>{locationData}</Dropdown.Item>)} */}
+                {/* {locationData.map((locationData) => <Dropdown.Item value={locationData} onClick={() => { <CenterDetail covid19Data={covid19Data} location={locationData} /> }}>{locationData}</Dropdown.Item>)} */}
+                {locationData.map((locationData) => <Dropdown.Item value={locationData} onClick={() => 
+                    { 
+                        let selectLocation = [];
+                        covid19Data.map(function (a, i) {
+                            if (a.address.includes(locationData)) {
+                                selectLocation.push(a);
+                            }
+                            setCovid19Data(selectLocation);
+                        });
+                    }
+                }>{locationData}</Dropdown.Item>)}
+                
 
             </DropdownButton>
         );
     }
+
 }
 
 
