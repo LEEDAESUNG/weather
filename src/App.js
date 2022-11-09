@@ -10,6 +10,7 @@ import data from './data/data.js'
 import ExWeatherInfo from './routes/ExWeatherInfo.js'
 import ExWeatherInfoDetail from './routes/ExWeatherInfoDetail.js'
 import Covid19V1Center from './routes/Covid19V1Center.js'
+import Covid19V1CenterDetail from './routes/Covid19V1CenterDetail.js'
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams} from 'react-router-dom';
@@ -89,8 +90,9 @@ function MainRoute(){
 
         <Route path="/Covid19V1Center" element={<div className="container"> <div className="row">  <Covid19V1Center /> </div></div>} > {/* Nested Routes라고 함 */}
           <Route path="member" element={<div> 멤버임</div>} /> {/* /Covid19V1Center/member와 동일, AboutPage출력및 AboutPage내의 outlet부분에 출력 */}
-          <Route path="location" element={<div> 로케이션임</div>} /> {/* /Covid19V1Center/location 동일, AboutPage출력및 AboutPage내의 outlet부분에 출력 */}
+          <Route path="location" element={<div> 로케이션임</div>} /> /Covid19V1Center/location 동일, AboutPage출력및 AboutPage내의 outlet부분에 출력
         </Route>
+        <Route path="/Covid19V1CenterDetail/:id" element={<Covid19V1CenterDetail />} /> {/* :id ==> 파라미터 */}
 
         <Route path="/event" element={<EventPage />} > {/* Nested Routes라고 함 */}
           <Route path="one" element={<div> 첫 주문시 양배추즙 서비스</div>} />
@@ -99,15 +101,6 @@ function MainRoute(){
 
         <Route path="*" element={<div>없는 페이지(404)</div>} /> {/* 그 외 모든 라우트 */}
       </Routes>
-
-
-      {/* <div className="side_recent_view">
-        <img src="https://codingapple1.github.io/shop/shoes1.jpg" width="100%" />
-        <img src="https://codingapple1.github.io/shop/shoes2.jpg" width="100%" />
-        <img src="https://codingapple1.github.io/shop/shoes3.jpg" width="100%" />
-        <img src="https://codingapple1.github.io/shop/shoes4.jpg" width="100%" />
-        <img src="https://codingapple1.github.io/shop/shoes5.jpg" width="100%" />
-      </div> */}
 
     </>
   );

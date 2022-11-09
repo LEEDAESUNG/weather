@@ -14,6 +14,7 @@ import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
+import Covid19V1CenterDetail from './Covid19V1CenterDetail.js';
 
 // import styled from 'styled-components'; // 설치:npm install --save styled-components
 // .pagination {
@@ -73,9 +74,10 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 
 
 function Covid19V1Center() {
-    let [dataCount, setDataCount] = useState(0);
-    let [covid19Data, setCovid19Data] = useState('');
-    let [locationData, setLocationData] = useState('');
+    let [dataCount, setDataCount] = useState(0); //데이터 수
+    let [covid19Data, setCovid19Data] = useState(''); //원본데이터
+    let [covid19DataView, setCovid19DataView] = useState(''); //뷰데이터
+    let [locationData, setLocationData] = useState(''); //지역명만 저장
     const [page, setPage] = useState(1);
 
     const handlePageChange = (page) => {
@@ -119,6 +121,7 @@ function Covid19V1Center() {
                 const comparator = (a, b) => a.address.localeCompare(b.address); // 주소별 소트
                 makeData = makeData.sort(comparator)
                 setCovid19Data(makeData); // 원본 데이터 저장
+                setCovid19DataView(makeData); // 백업 데이터 저장
                 //console.log(makeData);
 
 
@@ -185,44 +188,10 @@ function Covid19V1Center() {
     if (dataCount > 0) {
         
         return (
-            
-                // <div>
-                //     <h4>COVID19 예방접종센터</h4>
-                // </div>
-
-                // <Pagination
-                //     activePage={page}
-                //     itemsCountPerPage={10}
-                //     totalItemsCount={450}
-                //     pageRangeDisplayed={5}
-                //     prevPageText={"‹"}
-                //     nextPageText={"›"}
-                //     onChange={handlePageChange} 
-                // />
-
-                // <div className="col-md-3" key={i}>
-                //     <h5>[{covid19Data[i].centerName}]</h5>
-                //     <p> {covid19Data[i].address} </p>
-                //     <p> {covid19Data[i].phoneNumber} </p>
-                // </div>
-                
             <div>
-                {/* <button onClick={() => {
-                let copy = [10, 20, 30];
-                const comparator = (a, b) => a.title.localeCompare(b.title);
-                copy = copy.sort(comparator)
-                //setCovid19Data(copy);
-                }} > 상품명 정렬2</button> */}
-                <p />
-                <BasicButtonExample />
-                <p />
-
-                <Covid19V1CenterDetail />
+                <ComboButton />
+                <Covid19V1CenterLocation />
             </div>
-
-                    
-
-
         );
     }
     else{
@@ -235,37 +204,40 @@ function Covid19V1Center() {
         );
     }
 
-    function Covid19V1CenterDetail(){
+    function Covid19V1CenterLocation(){
         return (
             //'Primary','Secondary','Success','Danger','Warning','Info','Light','Dark'
-            covid19Data.map(function (a, i) {
+            covid19DataView.map(function (a, i) {
                 return (
-                    <div>
-                        <Card
-                            bg={'success'}
-                            key={i}
-                            text={'white'}
-                            style={{ width: '28rem' }}
-                            className="mb-2"
-                        >
-                            <Card.Header><h4>{covid19Data[i].centerName}</h4></Card.Header>
-                            <Card.Body>
-                                {/* <Card.Title>{covid19Data[i].centerName} </Card.Title> */}
-                                <Card.Text>
-                                    {covid19Data[i].address}
-                                </Card.Text>
-                                <Card.Text>
-                                    {covid19Data[i].phoneNumber}
-                                </Card.Text>
-                            </Card.Body>
-                        </Card>
+                    <div className="col-mb-4" key={i}>
+
+                        <Link to={"/Covid19V1CenterDetail/" + (covid19DataView[i].id)}>
+                            <Card
+                                bg={'success'} //green
+                                text={'white'}
+                                style={{ width: '28rem' }}
+                            >
+                                <Card.Header><h4>{covid19DataView[i].centerName}</h4></Card.Header>
+                                <Card.Body>
+                                    {/* <Card.Title>{covid19DataView[i].centerName} </Card.Title> */}
+
+                                    <Card.Text>
+                                        {covid19DataView[i].address}
+                                    </Card.Text>
+                                    <Card.Text>
+                                        {covid19DataView[i].phoneNumber}
+                                    </Card.Text>
+                                </Card.Body>
+                            </Card>
+
+                        </Link>
                         <span style={{ paddingRight: 1 }}></span>
                     </div>
                 )
             })
         );
     }
-    function BasicButtonExample() {
+    function ComboButton() {
         return (
             <DropdownButton id="dropdown-basic-button" title="지역선택">
                 {/* <Dropdown.Item href="#/action-1">전체</Dropdown.Item>
@@ -273,16 +245,14 @@ function Covid19V1Center() {
                 <Dropdown.Item href="#/action-2">경기</Dropdown.Item>
                 <Dropdown.Item href="#/action-3">인천</Dropdown.Item> */}
 
-                {/* {locationData.map((locationData) => <Dropdown.Item value={locationData} onClick={() => { console.log(locationData) }}>{locationData}</Dropdown.Item>)} */}
-                {/* {locationData.map((locationData) => <Dropdown.Item value={locationData} onClick={() => { <CenterDetail covid19Data={covid19Data} location={locationData} /> }}>{locationData}</Dropdown.Item>)} */}
                 {locationData.map((locationData) => <Dropdown.Item value={locationData} onClick={() => 
                     { 
                         let selectLocation = [];
-                        covid19Data.map(function (a, i) {
+                        covid19Data.map(function (a, i) { //원본데이터에서 해당하는 지역명의 데이터만 가져온다
                             if (a.address.includes(locationData)) {
                                 selectLocation.push(a);
                             }
-                            setCovid19Data(selectLocation);
+                            setCovid19DataView(selectLocation);
                         });
                     }
                 }>{locationData}</Dropdown.Item>)}
