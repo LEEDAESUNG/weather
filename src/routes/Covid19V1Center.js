@@ -74,12 +74,12 @@ import Covid19V1CenterDetail from './Covid19V1CenterDetail.js';
 
 
 function Covid19V1Center() {
-    let [dataCount, setDataCount] = useState(0); //데이터 수
+    let [dataCount, setDataCount] = useState(0); //전체 데이터 수
     let [covid19Data, setCovid19Data] = useState(''); //원본데이터
     let [covid19DataView, setCovid19DataView] = useState(''); //뷰데이터
-    let [locationData, setLocationData] = useState(''); //지역명만 저장
+    let [locationData, setLocationData] = useState(''); //전체 지역명 저장(중복제거)
     const [page, setPage] = useState(1);
-
+    
     const handlePageChange = (page) => {
         setPage(page);
     };
@@ -90,7 +90,7 @@ function Covid19V1Center() {
         axios.get(url).then((결과) => { //비동기
             
             //console.log('데이터 수:' + 결과.data.totalCount);
-            console.log(결과.data.data);
+            //console.log(결과.data.data);
             setDataCount(결과.data.totalCount);
 
             if (결과.data.currentCount == 0) {
@@ -122,11 +122,12 @@ function Covid19V1Center() {
                 makeData = makeData.sort(comparator)
                 setCovid19Data(makeData); // 원본 데이터 저장
                 setCovid19DataView(makeData); // 백업 데이터 저장
-                //console.log(makeData);
+                console.log(makeData);
 
 
                 //주소에서 지역명만 가져오기(ex:서울특별시,부산광역시..)
                 let arrLoc = [];
+                arrLoc.push('전체');
                 makeData.map(function (a, i) {
                     let loc = a.address.indexOf(' ');
                     let str = a.address.slice(0,loc);
@@ -152,38 +153,6 @@ function Covid19V1Center() {
     useEffect(() => {
         GetDataCount();
     }, []);
-
-
-
-
-            // < Form >
-            //     <Form.Group className="mb-3" controlId="formBasicEmail">
-            //         <Form.Label>Email address</Form.Label>
-            //         <Form.Control type="email" placeholder="Enter email" />
-            //         <Form.Text className="text-muted">
-            //             We'll never share your email with anyone else.
-            //         </Form.Text>
-            //     </Form.Group>
-
-            //     <Form.Group className="mb-3" controlId="formBasicPassword">
-            //         <Form.Label>Password</Form.Label>
-            //         <Form.Control type="password" placeholder="Password" />
-            //     </Form.Group>
-            //     <Form.Group className="mb-3" controlId="formBasicCheckbox">
-            //         <Form.Check type="checkbox" label="Check me out" />
-            //     </Form.Group>
-            //     <Button variant="primary" type="submit">
-            //         Submit
-            //     </Button>
-            // </Form >
-            
-
-    // <button onClick={() => {
-    //     let copy = [10, 20, 30];
-    //     const comparator = (a, b) => a.title.localeCompare(b.title);
-    //     copy = copy.sort(comparator)
-    //     //setCovid19Data(copy);
-    // }} > 상품명 정렬2</button>
 
     if (dataCount > 0) {
         
@@ -248,12 +217,18 @@ function Covid19V1Center() {
                 {locationData.map((locationData) => <Dropdown.Item value={locationData} onClick={() => 
                     { 
                         let selectLocation = [];
-                        covid19Data.map(function (a, i) { //원본데이터에서 해당하는 지역명의 데이터만 가져온다
-                            if (a.address.includes(locationData)) {
-                                selectLocation.push(a);
-                            }
-                            setCovid19DataView(selectLocation);
-                        });
+
+                        if (locationData == '전체'){
+                            setCovid19DataView(covid19Data);
+                        }
+                        else{
+                            covid19Data.map(function (a, i) { //원본데이터에서 해당하는 지역명의 데이터만 가져온다
+                                if (a.address.includes(locationData)) {
+                                    selectLocation.push(a);
+                                }
+                                setCovid19DataView(selectLocation);
+                            });
+                        }
                     }
                 }>{locationData}</Dropdown.Item>)}
                 
