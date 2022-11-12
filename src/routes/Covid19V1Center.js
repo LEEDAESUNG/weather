@@ -157,10 +157,10 @@ function Covid19V1Center() {
     if (dataCount > 0) {
         
         return (
-            <div>
+            <>
                 <ComboButton />
                 <Covid19V1CenterLocation />
-            </div>
+            </>
         );
     }
     else{
@@ -178,13 +178,15 @@ function Covid19V1Center() {
             //'Primary','Secondary','Success','Danger','Warning','Info','Light','Dark'
             covid19DataView.map(function (a, i) {
                 return (
-                    <div className="col-mb-4" key={i}>
+                    <>
+                    {/* <div className="col-mb-4" key={i}> */}
 
                         <Link to={"/Covid19V1CenterDetail/" + (covid19DataView[i].id)}>
                             <Card
                                 bg={'success'} //green
                                 text={'white'}
                                 style={{ width: '28rem' }}
+                                className="mb-2"
                             >
                                 <Card.Header><h4>{covid19DataView[i].centerName}</h4></Card.Header>
                                 <Card.Body>
@@ -201,7 +203,8 @@ function Covid19V1Center() {
 
                         </Link>
                         <span style={{ paddingRight: 1 }}></span>
-                    </div>
+                    {/* </div> */}
+                    </>
                 )
             })
         );

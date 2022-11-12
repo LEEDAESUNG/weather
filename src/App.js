@@ -1,4 +1,4 @@
-import { Navbar, Nav, Container, FormText } from 'react-bootstrap';
+import { Navbar, Nav, Container, Row, FormText } from 'react-bootstrap';
 import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom';
 import { useEffect, useState, useInterval, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -80,7 +80,7 @@ function MainRoute(){
         {/* <Route path="/detail" element={ <Detail shoes={shoes} /> } /> */}
         {/* <Route path="/detail/:id/:id2" element={<Detail shoes={shoes} />} /> */}
         {/* <Route path="/detail/:id/test/:id2" element={<Detail shoes={shoes} />} /> */}
-        <Route path="/ExWeatherInfo" element={<div className="container"> <div className="row"> <ExWeatherInfo weather={weather} setWeather={setWeather}/> </div></div>} />
+        <Route path="/ExWeatherInfo" element={<div className="container"> <div className="row"> <ExWeatherInfo weather={weather} setWeather={setWeather} /> </div></div>} />
         <Route path="/ExWeatherInfo/:unitCode" element={<ExWeatherInfoDetail weather={weather} setWeather={setWeather} />} />
         {/* <Route path="/cart" element={<Cart />} /> */}
 
@@ -88,6 +88,7 @@ function MainRoute(){
               <Route path="/about/member" element={<AboutPage />} />
               <Route path="/about/location" element={<AboutPage />} /> */}
 
+        {/* <Route path="/" element={<div className="container"> <div className="row"> <Home shoes={shoes} /> </div></div>} /> */}
         <Route path="/Covid19V1Center" element={<div className="container"> <div className="row">  <Covid19V1Center /> </div></div>} > {/* Nested Routes라고 함 */}
           <Route path="member" element={<div> 멤버임</div>} /> {/* /Covid19V1Center/member와 동일, AboutPage출력및 AboutPage내의 outlet부분에 출력 */}
           <Route path="location" element={<div> 로케이션임</div>} /> /Covid19V1Center/location 동일, AboutPage출력및 AboutPage내의 outlet부분에 출력
