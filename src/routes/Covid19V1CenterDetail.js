@@ -13,8 +13,8 @@ import { Nav, Tab } from "react-bootstrap";
 import { useDispatch, useSelector } from 'react-redux';
 import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom';
 import { useLocation } from "react-router-dom";
-
-function Covid19V1CenterDetail(props) {
+import '../App.css';
+function Covid19V1CenterDetail() {
 
 //"https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=ohxl1bxta0"
     
@@ -22,6 +22,10 @@ function Covid19V1CenterDetail(props) {
     const location = useLocation();
     const mapx = location.state.mapx;
     const mapy = location.state.mapy;
+    const centerName = location.state.name;
+    const address = location.state.addr;
+    const phoneNumber = location.state.phone;
+
     console.log(mapx);
     console.log(mapy);
 
@@ -50,6 +54,10 @@ function Covid19V1CenterDetail(props) {
 
     return (
         <>
+        <p></p>
+            <h4 >{centerName}</h4>
+            <div>{address}</div>
+            <div>{phoneNumber}</div>
             <div ref={mapElement} style={{ minHeight: '400px' }} /> 
         </>
     )

@@ -137,7 +137,7 @@ function Covid19V1Center() {
                 const arrLocUnique = arrLoc.filter((val, idx) => {
                     return arrLoc.indexOf(val) === idx; //값이 처음나오는 배열 인덱스와 현재 인덱스가 같으면 포함
                 });
-                console.log('arrLocUnique' + arrLocUnique);
+                //console.log('arrLocUnique' + arrLocUnique);
                 setLocationData(arrLocUnique);
                 
             }
@@ -181,7 +181,17 @@ function Covid19V1Center() {
                     <>
                     {/* <div className="col-mb-4" key={i}> */}
 
-                        <Link to={"/Covid19V1CenterDetail/" + (covid19DataView[i].id)}>
+
+
+                        
+
+
+
+                        {/* <Link to={"/Covid19V1CenterDetail/" + (covid19DataView[i].id)}> */}
+
+                        <Link to={"/Covid19V1CenterDetail/" + (covid19DataView[i].id)} state={{ 
+                            mapx: covid19DataView[i].lat, mapy: covid19DataView[i].lng, name: covid19DataView[i].centerName, addr: covid19DataView[i].address, phone: covid19DataView[i].phoneNumber }}>
+
                             <Card
                                 bg={'success'} //green
                                 text={'white'}
@@ -211,32 +221,35 @@ function Covid19V1Center() {
     }
     function ComboButton() {
         return (
-            <DropdownButton id="dropdown-basic-button" title="지역선택">
-                {/* <Dropdown.Item href="#/action-1">전체</Dropdown.Item>
-                <Dropdown.Item href="#/action-1">서울</Dropdown.Item>
-                <Dropdown.Item href="#/action-2">경기</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">인천</Dropdown.Item> */}
+            <>
+            <p></p>
+                <DropdownButton id="dropdown-basic-button" title="   지역선택   ">
+                    {/* <Dropdown.Item href="#/action-1">전체</Dropdown.Item>
+                    <Dropdown.Item href="#/action-1">서울</Dropdown.Item>
+                    <Dropdown.Item href="#/action-2">경기</Dropdown.Item>
+                    <Dropdown.Item href="#/action-3">인천</Dropdown.Item> */}
 
-                {locationData.map((locationData) => <Dropdown.Item value={locationData} onClick={() => 
-                    { 
-                        let selectLocation = [];
+                    {locationData.map((locationData) => <Dropdown.Item value={locationData} onClick={() => 
+                        { 
+                            let selectLocation = [];
 
-                        if (locationData == '전체'){
-                            setCovid19DataView(covid19Data);
+                            if (locationData == '전체'){
+                                setCovid19DataView(covid19Data);
+                            }
+                            else{
+                                covid19Data.map(function (a, i) { //원본데이터에서 해당하는 지역명의 데이터만 가져온다
+                                    if (a.address.includes(locationData)) {
+                                        selectLocation.push(a);
+                                    }
+                                    setCovid19DataView(selectLocation);
+                                });
+                            }
                         }
-                        else{
-                            covid19Data.map(function (a, i) { //원본데이터에서 해당하는 지역명의 데이터만 가져온다
-                                if (a.address.includes(locationData)) {
-                                    selectLocation.push(a);
-                                }
-                                setCovid19DataView(selectLocation);
-                            });
-                        }
-                    }
-                }>{locationData}</Dropdown.Item>)}
-                
+                    }>{locationData}</Dropdown.Item>)}
+                    
 
-            </DropdownButton>
+                </DropdownButton>
+            </>
         );
     }
 
